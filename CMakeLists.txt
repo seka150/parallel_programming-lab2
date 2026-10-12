@@ -6,10 +6,11 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang++")
-set(CMAKE_OSX_SYSROOT "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk")
+find_package(OpenMP REQUIRED)
 
 add_executable(matrix main.cpp)
+
+target_link_libraries(matrix PRIVATE OpenMP::OpenMP_CXX)
 
 target_compile_options(matrix PRIVATE
     -Wall

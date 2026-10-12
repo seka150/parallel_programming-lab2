@@ -10,8 +10,8 @@ ROOT = Path(__file__).resolve().parent
 PROGRAM = ROOT / "build" / "matrix"
 GENERATOR = ROOT / "gen.py"
 
-SIZES = [50, 100, 200, 300, 500]
-THREAD_COUNTS = [1, 2, 4]
+SIZES = [200, 400, 800, 1200, 1600]
+THREAD_COUNTS = [1, 2, 4, 8]
 REPEATS = 3
 
 if not PROGRAM.exists():

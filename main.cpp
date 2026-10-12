@@ -3,7 +3,7 @@
 #include <vector>
 #include <chrono>
 #include <iomanip>
-#include <thread>
+#include <omp.h>
 #include <algorithm>
 #include <string>
 
@@ -38,39 +38,18 @@ ResultMatrix multiply_parallel(
     int thread_count)
 {
     ResultMatrix C(n, vector<long long>(n, 0));
-    vector<thread> threads;
 
-    int rows_per_thread = n / thread_count;
-    int remaining_rows = n % thread_count;
-    int start_row = 0;
-
-    for (int t = 0; t < thread_count; t++)
+#pragma omp parallel for num_threads(thread_count) schedule(static)
+    for (int i = 0; i < n; i++)
     {
-        int rows = rows_per_thread + (t < remaining_rows ? 1 : 0);
-        int end_row = start_row + rows;
-
-        threads.emplace_back(
-            [&A, &B, &C, n, start_row, end_row]()
+        for (int k = 0; k < n; k++)
+        {
+            for (int j = 0; j < n; j++)
             {
-                for (int i = start_row; i < end_row; i++)
-                {
-                    for (int k = 0; k < n; k++)
-                    {
-                        for (int j = 0; j < n; j++)
-                        {
-                            C[i][j] +=
-                                static_cast<long long>(A[i][k]) * B[k][j];
-                        }
-                    }
-                }
-            });
-
-        start_row = end_row;
-    }
-
-    for (auto &thread : threads)
-    {
-        thread.join();
+                C[i][j] +=
+                    static_cast<long long>(A[i][k]) * B[k][j];
+            }
+        }
     }
 
     return C;
